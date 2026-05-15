@@ -1,206 +1,597 @@
 <?php
+
 include "config.php";
-?>
-<?php
 session_start();
 
+/* ================= FETCH VEHICLE ================= */
 
-if (isset($_GET['vehicle_id'])) {
+if(isset($_GET['vehicle_id'])){
 
-  $id = intval($_GET['vehicle_id']);
-  $sql = "SELECT *, C.city, B.brand ,V.id as vehicle_id
-            FROM vehicles as V 
-            LEFT JOIN city_master as C ON V.city = C.id 
-            LEFT JOIN brand_master as B ON V.brand = B.id 
-          WHERE V.id = '$id'";
+    $id = intval($_GET['vehicle_id']);
 
-  $res = mysqli_query($conn, $sql);
+    $sql = "SELECT *,
+            C.city,
+            B.brand,
+            V.id as vehicle_id
 
-  if (mysqli_num_rows($res) > 0) {
-    $row = mysqli_fetch_assoc($res);
-  } else {
-    die("Vehicle not found");
-  }
-} else {
-  die("Invalid Request");
+            FROM vehicles V
+
+            LEFT JOIN city_master C
+            ON V.city = C.id
+
+            LEFT JOIN brand_master B
+            ON V.brand = B.id
+
+            WHERE V.id = '$id'";
+
+    $res = mysqli_query($conn, $sql);
+
+    if(mysqli_num_rows($res) > 0){
+
+        $row = mysqli_fetch_assoc($res);
+
+    }else{
+
+        die("Vehicle Not Found");
+    }
+
+}else{
+
+    die("Invalid Request");
 }
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vehicle Details</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
 
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #eef1f7;
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Vehicle Details</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #f4f7fb,
+    #eef2f9,
+    #f8fbff
+    );
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    position:relative;
+}
+
+/* ================= BACKGROUND EFFECT ================= */
+
+body::before{
+
+    content:'';
+
+    position:fixed;
+
+    width:350px;
+
+    height:350px;
+
+    background:
+    rgba(13,110,253,0.05);
+
+    border-radius:50%;
+
+    top:-120px;
+
+    right:-120px;
+
+    z-index:-1;
+}
+
+body::after{
+
+    content:'';
+
+    position:fixed;
+
+    width:300px;
+
+    height:300px;
+
+    background:
+    rgba(37,211,102,0.05);
+
+    border-radius:50%;
+
+    bottom:-100px;
+
+    left:-100px;
+
+    z-index:-1;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+
+    background:
+    rgba(0,0,0,0.85);
+
+    backdrop-filter:blur(10px);
+
+    padding:12px 0;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+
+    box-shadow:
+    0 4px 20px rgba(0,0,0,0.15);
+}
+
+.navbar-brand{
+
+    color:#fff !important;
+
+    font-size:30px;
+
+    font-weight:700;
+}
+
+.nav-link{
+
+    color:#ddd !important;
+
+    font-size:17px;
+
+    margin-left:18px;
+
+    font-weight:500;
+
+    position:relative;
+
+    transition:0.3s;
+}
+
+.nav-link:hover{
+
+    color:#fff !important;
+}
+
+.nav-link::after{
+
+    content:'';
+
+    position:absolute;
+
+    width:0%;
+
+    height:2px;
+
+    background:#0d6efd;
+
+    left:0;
+
+    bottom:-5px;
+
+    transition:0.3s;
+}
+
+.nav-link:hover::after{
+
+    width:100%;
+}
+
+/* ================= MAIN CARD ================= */
+
+.vehicle-card{
+
+    background:
+    rgba(255,255,255,0.9);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.08);
+
+    transition:0.4s;
+}
+
+.vehicle-card:hover{
+
+    transform:translateY(-5px);
+}
+
+/* ================= IMAGE ================= */
+
+.vehicle-img{
+
+    width:100%;
+
+    height:320px;
+
+    object-fit:contain;
+
+    border-radius:20px;
+
+    transition:0.4s;
+}
+
+.vehicle-img:hover{
+
+    transform:scale(1.03);
+}
+
+/* ================= DETAILS ================= */
+
+.badge-city{
+
+    background:#6c757d;
+
+    color:white;
+
+    padding:8px 14px;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    font-weight:500;
+}
+
+.vehicle-title{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:#111;
+
+    margin-top:15px;
+}
+
+.price{
+
+    font-size:30px;
+
+    color:#28a745;
+
+    font-weight:700;
+
+    margin-top:10px;
+}
+
+.description{
+
+    color:#666;
+
+    font-size:16px;
+
+    line-height:1.6;
+
+    margin-top:14px;
+}
+/* ================= SPECS ================= */
+
+.spec-box{
+
+    background:
+    rgba(248,249,250,0.9);
+
+   
+    padding:18px;
+
+    margin-top:18px;
+
+    border-radius:18px;
+
+    border:
+    1px solid rgba(0,0,0,0.05);
+
+   
+}
+
+.spec-box p{
+
+    margin-bottom:14px;
+
+    font-size:17px;
+
+    color:#333;
+}
+
+/* ================= BUTTON ================= */
+
+.btn-book{
+
+    background:
+
+    linear-gradient(
+    45deg,
+    #0d6efd,
+    #00bfff
+    );
+
+    border:none;
+
+    border-radius:15px;
+
+    color:white !important;
+
+    font-size:20px;
+
+    font-weight:600;
+
+    padding:15px;
+
+    margin-top:18px;
+
+    transition:0.3s;
+
+    box-shadow:
+    0 8px 25px rgba(13,110,253,0.3);
+
+    text-decoration:none;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+}
+
+.btn-book:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 12px 30px rgba(13,110,253,0.4);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:992px){
+
+    .vehicle-title{
+
+        font-size:34px;
     }
 
-    /* NAVBAR */
-    .navbar {
-      backdrop-filter: blur(10px);
-      background: rgba(0, 0, 0, 0.7);
+    .price{
+
+        font-size:30px;
+    }
+}
+
+@media(max-width:768px){
+
+    .vehicle-card{
+
+        padding:20px;
     }
 
-    .navbar-brand {
-      font-size: 24px;
-      font-weight: 600;
-      color: #fff !important;
+    .vehicle-title{
+
+        font-size:28px;
     }
 
-    .nav-link {
-      color: #ccc !important;
-      margin-left: 15px;
-      transition: 0.3s;
-    }
+    .vehicle-img{
 
-    .nav-link:hover {
-      color: #fff !important;
+        height:320px;
     }
+}
 
-
-    /* Card */
-    .vehicle-card {
-      background: #fff;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Image */
-    .vehicle-img {
-      width: 100%;
-      height: 350px;
-      object-fit: cover;
-      border-radius: 15px;
-    }
-
-    /* Title */
-    .vehicle-title {
-      font-size: 28px;
-      font-weight: 600;
-    }
-
-    /* Price */
-    .price {
-      font-size: 24px;
-      color: #28a745;
-      font-weight: bold;
-    }
-
-    /* Specs */
-    .spec-box {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 10px;
-    }
-
-    .spec-box p {
-      margin: 5px 0;
-    }
-
-    /* Button */
-    .btn-book {
-      background: linear-gradient(45deg, #007bff, #00c6ff);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 18px;
-      padding: 10px;
-    }
-
-    .btn-book:hover {
-      opacity: 0.9;
-    }
-
-    /* Badge */
-    .badge-city {
-      background: #6c757d;
-      padding: 6px 10px;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-    }
-  </style>
+</style>
 
 </head>
 
 <body>
 
- 
+<!-- ================= NAVBAR ================= -->
 
-  <nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg">
+
 <div class="container">
-  <a class="navbar-brand text-white" href="#">🚗 RentRide</a>
 
-  <div class="ms-auto">
-    <a class="nav-link d-inline" href="index.php">Home</a>
+<a class="navbar-brand"
+href="index.php">
 
-    <?php if (isset($_SESSION['user'])) { ?>
-      <a class="nav-link d-inline" href="booking_history.php">My Bookings</a>
-      <a class="nav-link d-inline" href="userlogout.php">Logout</a>
-    <?php } else { ?>
-      <a class="nav-link d-inline" href="login.html">Login</a>
-      <a class="nav-link d-inline" href="signup.html">Signup</a>
-      <a class="nav-link d-inline" href="dashboard.php">Admin Login</a>
+🚗 RentRide
 
-    <?php } ?>
-  </div>
+</a>
+
+<div class="ms-auto">
+
+<a class="nav-link d-inline"
+href="index.php">
+
+Home
+
+</a>
+
+<?php if(isset($_SESSION['user_id'])){ ?>
+
+<a class="nav-link d-inline"
+href="booking_history.php">
+
+My Bookings
+
+</a>
+
+<a class="nav-link d-inline"
+href="userlogout.php">
+
+Logout
+
+</a>
+
+<?php }else{ ?>
+
+<a class="nav-link d-inline"
+href="loginpage.php">
+
+Login
+
+</a>
+
+<a class="nav-link d-inline"
+href="signup.html">
+
+Signup
+
+</a>
+
+<a class="nav-link d-inline"
+href="dashboard.php">
+
+Admin Login
+
+</a>
+
+<?php } ?>
+
+</div>
 </div>
 </nav>
 
-  <div class="container my-5">
+<!-- ================= MAIN SECTION ================= -->
 
-    <div class="vehicle-card">
+<div class="container my-5">
 
-      <div class="row">
+<div class="vehicle-card">
 
-        <!-- Left Image -->
-        <div class="col-md-6">
-          <img src="uploads/<?php echo $row['image']; ?>" class="vehicle-img">
-        </div>
+<div class="row align-items-center">
 
-        <!-- Right Details -->
-        <div class="col-md-6">
+<!-- ================= IMAGE ================= -->
 
-          <span class="badge-city">📍 <?php echo $row['city']; ?></span>
+<div class="col-lg-6 mb-4 mb-lg-0">
 
-          <h3 class="vehicle-title mt-2">
-            <?php echo $row['brand']; ?> - <?php echo $row['name']; ?>
-          </h3>
+<img src="uploads/<?php echo $row['image']; ?>"
 
-          <p class="price">₹<?php echo $row['price']; ?> / day</p>
+class="vehicle-img"
 
-          <p class="text-muted">
-            Perfect vehicle for city rides and long trips. Comfortable & reliable.
-          </p>
+onerror="this.src='https://via.placeholder.com/500x300?text=No+Image'">
 
-          <!-- Specs -->
-          <div class="spec-box mb-3">
-            <p>⚙️ <b>Engine:</b> <?php echo $row['engine']; ?></p>
-            <p>⛽ <b>Fuel:</b> <?php echo $row['fuel']; ?></p>
-            <p>📊 <b>Mileage:</b> <?php echo $row['mileage']; ?> KM/L</p>
-          </div>
+</div>
 
-          <!-- Button -->
-          <a href="booking.php?vehicle_id=<?php echo $row['vehicle_id']; ?>"
-            class="btn btn-book w-100">
-            🚗 Book Now
-          </a>
+<!-- ================= DETAILS ================= -->
 
-        </div>
+<div class="col-lg-6">
 
-      </div>
+<span class="badge-city">
 
-    </div>
+📍 <?php echo $row['city']; ?>
 
-  </div>
+</span>
+
+<h1 class="vehicle-title">
+
+<?php echo $row['brand']; ?>
+
+-
+
+<?php echo $row['name']; ?>
+
+</h1>
+
+<div class="price">
+
+₹<?php echo $row['price']; ?>
+
+/ day
+
+</div>
+
+<p class="description">
+
+Experience smooth rides and premium comfort
+with this amazing vehicle.
+Perfect for city rides, long trips,
+weekend adventures and daily travel.
+
+</p>
+
+<!-- ================= SPECS ================= -->
+
+<div class="spec-box">
+
+<p>
+
+⚙️ <b>Engine:</b>
+
+<?php echo $row['engine']; ?>
+
+</p>
+
+<p>
+
+⛽ <b>Fuel:</b>
+
+<?php echo $row['fuel']; ?>
+
+</p>
+
+<p>
+
+📊 <b>Mileage:</b>
+
+<?php echo $row['mileage']; ?>
+
+KM/L
+
+</p>
+
+</div>
+
+<!-- ================= BUTTON ================= -->
+
+<a href="booking.php?vehicle_id=<?php echo $row['vehicle_id']; ?>"
+
+class="btn-book">
+
+🚗 Book Now
+
+</a>
+
+</div>
+</div>
+</div>
+</div>
 
 </body>
-
 </html>

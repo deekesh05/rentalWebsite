@@ -2,20 +2,64 @@
 
 include "config.php";
 
-if (isset($_POST['signup'])) {
+if(isset($_POST['signup'])){
 
-    $name = $_POST['name'];
-    $mobile = $_POST['mobile'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    /* GET DATA */
 
-    $sql = "INSERT INTO users (name, mobile, email, password)
-        VALUES ('$name','$mobile', '$email', '$password')";
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
 
-    if (mysqli_query($conn, $sql)) {
-        echo "Signup Successful";
-        header("Location:login.html");
-    } else {
-        echo "Error";
+    $mobile = mysqli_real_escape_string($conn, $_POST['mobile']);
+
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+
+    /* CHECK EMAIL */
+
+    $check = mysqli_query($conn,
+    "SELECT * FROM users WHERE email='$email'");
+
+    if(mysqli_num_rows($check) > 0){
+
+        echo "<script>
+
+        alert('Email Already Exists');
+
+        window.location='signup.html';
+
+        </script>";
+
+    }else{
+
+        /* INSERT */
+
+        $sql = "INSERT INTO users
+        (name, mobile, email, password)
+
+        VALUES
+
+        ('$name','$mobile','$email','$password')";
+
+        if(mysqli_query($conn, $sql)){
+
+            echo "<script>
+
+            alert('Signup Successful');
+
+            window.location='loginpage.php';
+
+            </script>";
+
+        }else{
+
+            echo "<script>
+
+            alert('Something Went Wrong');
+
+            window.location='signup.html';
+
+            </script>";
+        }
     }
 }
+?>
