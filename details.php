@@ -382,6 +382,21 @@ body::after{
     box-shadow:
     0 12px 30px rgba(13,110,253,0.4);
 }
+/* ================= FOOTER ================= */
+
+footer{
+
+    background:#111;
+
+    color:white;
+
+    text-align:center;
+
+    padding:28px;
+
+    margin-top:80px;
+}
+
 
 /* ================= RESPONSIVE ================= */
 
@@ -592,6 +607,19 @@ class="btn-book">
 </div>
 </div>
 </div>
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<h5>
+🚗 RentRide
+</h5>
+
+<p class="mb-0">
+© 2026 All Rights Reserved | Designed By Deekesh
+</p>
+
+</footer>
 
 </body>
 </html>

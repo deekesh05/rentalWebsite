@@ -506,6 +506,21 @@ if (isset($_POST['confirm_booking'])) {
                 font-size: 26px;
             }
         }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+
+            background: #111;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 28px;
+
+            margin-top: 80px;
+        }
     </style>
 
 </head>
@@ -578,7 +593,7 @@ if (isset($_POST['confirm_booking'])) {
 
         <div class="main-box">
 
-           <div class="row align-items-center g-3">
+            <div class="row align-items-center g-3">
 
                 <!-- ================= LEFT ================= -->
 
@@ -825,6 +840,19 @@ d-flex align-items-center justify-content-center">
             </div>
         </div>
     </div>
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <h5>
+            🚗 RentRide
+        </h5>
+
+        <p class="mb-0">
+            © 2026 All Rights Reserved | Designed By Deekesh
+        </p>
+
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
